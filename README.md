@@ -35,8 +35,9 @@ npm install
 
 ### Events
 
-- `Deposit(uint256 amount)`: Emitted when a deposit is made.
-- `Withdraw(uint256 amount)`: Emitted when a withdrawal is executed.
+- `Deposit(uint256 amount)`: Emitted when a deposit is fired.
+- `Withdraw(uint256 amount)`: Emitted when a withdrawal is fired.
+- `OwnershipTransferred(address previousOwner, address newOwner)`: Emitted when a transfer is fired.
 
 ### Functions
 
