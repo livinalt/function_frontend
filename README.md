@@ -1,11 +1,8 @@
 # Frontend Integration Function
 
-# Assessment Smart Contract
-
 ## Overview
 
-The Assessment smart contract is a basic Ethereum smart contract written in Solidity. It provides functionality to manage an account balance, allowing the owner to deposit and withdraw funds. The contract emits events to provide transparency and allows external entities to monitor key actions.
-
+This smart contract is a basic Ethereum smart contract written in Solidity. It provides functionality to manage an account balance, allowing the owner to deposit and withdraw funds. The contract emits events to provide transparency and allows external entities to monitor key actions.
 
 ## Getting Started
 
@@ -57,6 +54,11 @@ This contract is suitable for managing account balances, allowing the owner to d
 ## Safety Considerations
 
 Thoroughly test the contract on test networks before deploying to the Ethereum mainnet. Ensure that the code meets security standards and is free of vulnerabilities.
+
+## Frontend Integration Script
+
+### WalletIntegration Component
+
 
 ## Testing
 
