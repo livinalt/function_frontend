@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import atm_abi from "../artifacts/contracts/Assessment.sol/Assessment.json";
 
-export default function HomePage() {
+export default function WalletIntegration() {
   const [ethWallet, setEthWallet] = useState(undefined);
   const [account, setAccount] = useState(undefined);
   const [atm, setATM] = useState(undefined);
@@ -51,7 +51,7 @@ export default function HomePage() {
       const accounts = await ethWallet.request({ method: "eth_requestAccounts" });
       handleAccount(accounts);
 
-      // once wallet is set we can get a reference to our deployed contract
+      // Once the wallet is set, get a reference to your deployed contract
       getATMContract();
     } catch (error) {
       console.error("Error connecting account:", error);
@@ -73,9 +73,9 @@ export default function HomePage() {
   const getBalance = async () => {
     try {
       if (atm) {
-        const balance = await atm.getBalance();
-        console.log("Balance retrieved:", balance.toNumber());
-        setBalance(balance.toNumber());
+        const contractBalance = await atm.getBalance();
+        console.log("Balance retrieved:", contractBalance.toNumber());
+        setBalance(contractBalance.toNumber());
       }
     } catch (error) {
       console.error("Error fetching balance:", error);
@@ -99,7 +99,7 @@ export default function HomePage() {
   const withdraw = async () => {
     try {
       if (atm) {
-        let tx = await atm.withdraw(1);
+        let tx = await atm.withdraw(1)
         console.log("Withdrawal transaction sent:", tx);
         await tx.wait();
         console.log("Withdrawal transaction confirmed");
@@ -134,23 +134,42 @@ export default function HomePage() {
       console.error("Error:", error);
     }
   };
-  
+
+  const handleNewOwnerChange = (event) => {
+    setNewOwner(event.target.value);
+  };
+
+  const getNetwork = async () => {
+    try {
+      if (ethereum) {
+        const network = await ethereum.request({ method: 'net_version' });
+        setNetworkName(network);
+      } else {
+        console.log("MetaMask not detected");
+      }
+    } catch (error) {
+      console.error("Error getting network:", error);
+    }
+  };
 
   const initUser = () => {
     try {
-      // Check to see if the user has MetaMask
+      // Check if the user has MetaMask
       if (!ethWallet) {
         return <p>Please install MetaMask to use this.</p>;
       }
 
-      // Check to see if the user is connected. If not, connect to their account
+      // This checks if the user is connected; if not, connect to their account
       if (!account) {
         return <button onClick={connectAccount}>Please connect your MetaMask wallet</button>;
       }
 
-      // Fetch the balance if not available
+      // Fetch the balance and network if not available
       if (balance === undefined) {
         getBalance();
+      }
+      if (networkName === "Ethereum") {
+        getNetwork();
       }
 
       return (
@@ -158,6 +177,16 @@ export default function HomePage() {
           <p>Network: {networkName} </p>
           <p>Your Account: {account}</p>
           <p>Your Balance: {balance}</p>
+          <label>
+            New Owner:
+            <input
+              type="text"
+              value={newOwner}
+              onChange={handleNewOwnerChange}
+              placeholder="Enter new owner address"
+            />
+          </label>
+          <button onClick={transferOwnership}>Transfer Ownership</button>
           <button onClick={deposit}>Deposit 1 ETH</button>
           <button onClick={withdraw}>Withdraw 1 ETH</button>
         </div>
@@ -170,30 +199,32 @@ export default function HomePage() {
 
   useEffect(() => {
     getWallet();
+    getNetwork();
   }, []);
 
   return (
     <main className="container">
       <header>
-        <h1>Welcome to the Majorie Bloc!</h1>
+        <h1>Welcome to the Majorie Hub!</h1>
       </header>
       {initUser()}
       <style jsx>{`
-       .container {
-        text-align: center;
+        .container {
+          text-align: center;
+        }
+    
+        header {
+          background-color: #0067ff;
+          color: #dedede;
+          padding: 10px;
+          margin-bottom: 20px;
+        }
+    
+        h1 {
+          margin: 0;
+        }
+      `}
+      </style>
+      </main>
+    )
       }
-  
-      header {
-        background-color: #0067ff;
-        color: #dedede;
-        padding: 10px;
-        margin-bottom: 20px;
-      }
-  
-      h1 {
-        margin: 0;
-      }
-      `}</style>
-    </main>
-  );
-}
